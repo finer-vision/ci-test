@@ -41,7 +41,10 @@ try {
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}`;
     sshCommandString += ` && rm -rf $OLD_GIT_COMMIT_HASHES`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
-    sshCommandString += ` && cp .env.example .env`;
+    sshCommandString += ` && cp -n .env.example ${BUILD_STORAGE_PATH}/${config.projectName}/.env`;
+
+    // @todo make this more generic. This will fail if there is no "app" image in the compose file.
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/docker-compose.prod.yml run app php artisan key:generate`;
 
     if (config.hasOwnProperty('env')) {
         for (const env in config.env) {
@@ -58,6 +61,7 @@ try {
     sshCommandString += ` && ln -sfn ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH ${BUILD_STORAGE_PATH}/${config.projectName}/live`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/live`;
     sshCommandString += ` && chown www-data:www-data -R ${config.writableDirectories.join(' ')}`;
+    sshCommandString += ` && cp cp -n ${BUILD_STORAGE_PATH}/${config.projectName}/.env ${BUILD_STORAGE_PATH}/${config.projectName}/live/.env`;
     sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/live/docker-compose.prod.yml up --build -d`;
 
     if (config.hasOwnProperty('commands')) {
