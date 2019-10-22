@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+require('dotenv').config({path: path.resolve(__dirname, '.env')});
 
 const SRC_PATH = path.resolve(__dirname, 'src');
 const BUILD_PATH = path.resolve(__dirname, 'public', 'build');
@@ -71,6 +72,11 @@ const config = {
         contentBase: BUILD_PATH,
         writeToDisk: true,
         open: false,
+        port: process.env.DEV_SERVER_PORT || 8081,
+        host: '0.0.0.0',
+        proxy: {
+            '/': 'http://nginx',
+        },
     },
 };
 

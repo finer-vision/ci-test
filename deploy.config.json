@@ -1,0 +1,24 @@
+{
+    "ssh": {
+        "user": "root",
+        "ip": "katie.finervision.com",
+        "key": "~/.ssh/KatieDeploymentKey"
+    },
+    "repo": "https://github.com/finer-vision/ci-test",
+    "projectName": "ci-test",
+    "releasePath": "/var/www/sites",
+    "env": {
+        "APP_ENV": {
+            "from": "local",
+            "to": "production"
+        },
+        "APP_DEBUG": {
+            "from": true,
+            "to": false
+        },
+        "NGINX_PORT": {
+            "from": 8080,
+            "to": 8107
+        }
+    }
+}
