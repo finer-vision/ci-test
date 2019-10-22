@@ -60,7 +60,6 @@ try {
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/live`;
     sshCommandString += ` && chown www-data:www-data -R ${config.writableDirectories.join(' ')}`;
     sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/live/docker-compose.prod.yml up --build -d`;
-    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/live/docker-compose.prod.yml exec app php artisan key:generate`;
 
     if (config.hasOwnProperty('commands')) {
         sshCommandString += ` && ${config.commands}`;
