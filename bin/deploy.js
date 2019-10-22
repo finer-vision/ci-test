@@ -40,21 +40,20 @@ try {
     sshCommandString += ` && rm -rf ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME}`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}`;
     sshCommandString += ` && rm -rf $OLD_GIT_COMMIT_HASHES`;
-    sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
-    sshCommandString += ` && cp .env.example .env`;
-
-    // @todo make this more generic. This will fail if there is no "app" image in the compose file.
-    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml run app php artisan key:generate`;
-    sshCommandString += ` && cp -n ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/.env ${BUILD_STORAGE_PATH}/${config.projectName}/.env`;
+    sshCommandString += ` && cp ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/.env.example ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/.env`;
 
     if (config.hasOwnProperty('env')) {
         for (const env in config.env) {
             if (config.env.hasOwnProperty(env)) {
                 const {from, to} = config.env[env];
-                sshCommandString += ` && sed -i '' -e 's/${env}=${from}/${env}=${to}/g' .env`;
+                sshCommandString += ` && sed -i '' -e 's/${env}=${from}/${env}=${to}/g' ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/.env`;
             }
         }
     }
+
+    // @todo make this more generic. This will fail if there is no "app" image in the compose file.
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml run app php artisan key:generate`;
+    sshCommandString += ` && cp -n ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/.env ${BUILD_STORAGE_PATH}/${config.projectName}/.env`;
 
     sshCommandString += ` && docker image prune -f`;
     sshCommandString += ` && docker network prune -f`;

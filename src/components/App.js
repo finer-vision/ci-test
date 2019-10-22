@@ -4,7 +4,7 @@ export default class App extends Component {
     render() {
         return (
             <div>
-                CI Test 4
+                CI Test 5
             </div>
         );
     }
