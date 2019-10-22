@@ -57,10 +57,11 @@ try {
     sshCommandString += ` && docker network prune -f`;
     sshCommandString += ` && docker volume prune -f`;
     sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml build --parallel`;
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml run app php artisan key:generate`;
     sshCommandString += ` && [ -d ${BUILD_STORAGE_PATH}/${config.projectName}/$LAST_GIT_COMMIT_HASH ] && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$LAST_GIT_COMMIT_HASH/docker-compose.prod.yml down || echo 0`;
-    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml up -d`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
     sshCommandString += ` && chown www-data:www-data -R ${config.writableDirectories.join(' ')}`;
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml up -d`;
 
     if (config.hasOwnProperty('commands')) {
         sshCommandString += ` && ${config.commands}`;
