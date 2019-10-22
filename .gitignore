@@ -4,4 +4,3 @@ public/build/
 .idea/
 .env
 .DS_Store
-TravisCIDeployKey
