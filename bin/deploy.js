@@ -35,7 +35,6 @@ try {
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME}`;
     sshCommandString += ` && GIT_COMMIT_HASH=$(git rev-parse HEAD)`;
     sshCommandString += ` && OLD_GIT_COMMIT_HASHES=$(git rev-list HEAD --skip=${MAX_VERSIONS})`;
-    sshCommandString += ` && LAST_GIT_COMMIT_HASH=$(git rev-list HEAD --skip=1 --max-count=1)`;
     sshCommandString += ` && rm -rf .git`;
     sshCommandString += ` && cp -r ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME} ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
     sshCommandString += ` && rm -rf ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME}`;
