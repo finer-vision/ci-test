@@ -1,22 +1,26 @@
 matrix:
   include:
-    - language: php
-      php: 7.2
-      before_script:
-        - cp .env.example .env
-        - composer self-update
-        - composer install --prefer-source --no-interaction
-        - php artisan key:generate
-      script:
-        - echo "Finished PHP"
-
-    - language: node_js
-      node_js: 12.13
-      before_script:
-        - npm install --no-progress --ignore-optional --no-interaction
-        - npm run build
-      script:
-        - echo "Finished NodeJS"
-
+  - language: php
+    php: 7.2
+    before_script:
+    - cp .env.example .env
+    - composer self-update
+    - composer install --prefer-source --no-interaction
+    - php artisan key:generate
+    script:
+    - echo "Finished PHP"
+  - language: node_js
+    node_js: 12.13
+    before_script:
+    - npm ci
+    - npm run build
+    script:
+    - echo "Finished NodeJS"
+    cache:
+      directories:
+      - "$HOME/.npm"
 notifications:
   email: false
+before_install:
+- openssl aes-256-cbc -K $encrypted_03302a942c69_key -iv $encrypted_03302a942c69_iv
+  -in TravisCIDeployKey.enc -out TravisCIDeployKey -d
