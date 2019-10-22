@@ -30,5 +30,10 @@ stages:
   - node_js
   - deploy
 
+addons:
+  ssh_known_hosts:
+  - katie.finervision.com
+  - emily.finervision.com
+
 notifications:
   email: false
