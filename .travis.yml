@@ -22,6 +22,7 @@ jobs:
     - stage: deploy
       script:
         - openssl aes-256-cbc -K $encrypted_03302a942c69_key -iv $encrypted_03302a942c69_iv -in TravisCIDeployKey.enc -out TravisCIDeployKey -d
+        - chmod 600 TravisCIDeployKey
         - scp -o StrictHostKeyChecking=no -i TravisCIDeployKey -r ./ root@katie.finervision.com:~/.travis-builds/$TRAVIS_BUILD_ID
 
 stages:
