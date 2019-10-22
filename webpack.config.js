@@ -70,12 +70,7 @@ const config = {
     devServer: {
         contentBase: BUILD_PATH,
         writeToDisk: true,
-        port: process.env.DEV_SERVER_PORT || 8081,
-        host: '0.0.0.0',
         open: false,
-        proxy: {
-            '/': 'http://nginx',
-        },
     },
 };
 
