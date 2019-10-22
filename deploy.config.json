@@ -5,6 +5,11 @@
         "key": "~/.ssh/KatieDeploymentKey"
     },
     "repo": "https://github.com/finer-vision/ci-test",
+    "writableDirectories": [
+        "public",
+        "bootstrap",
+        "storage"
+    ],
     "projectName": "ci-test",
     "env": {
         "APP_ENV": {
