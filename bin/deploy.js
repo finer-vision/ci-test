@@ -34,12 +34,13 @@ try {
     sshCommandString += ` && git clone ${config.repo} ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME}`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME}`;
     sshCommandString += ` && GIT_COMMIT_HASH=$(git rev-parse HEAD)`;
-    sshCommandString += ` && OLD_GIT_COMMITS=$(git rev-list HEAD --skip=${MAX_VERSIONS})`;
+    sshCommandString += ` && OLD_GIT_COMMIT_HASHES=$(git rev-list HEAD --skip=${MAX_VERSIONS})`;
+    sshCommandString += ` && LAST_GIT_COMMIT_HASH=$(git rev-list HEAD --skip=1 --max-count=1)`;
     sshCommandString += ` && rm -rf .git`;
     sshCommandString += ` && cp -r ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME} ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
     sshCommandString += ` && rm -rf ${BUILD_STORAGE_PATH}/${config.projectName}/${TMP_NAME}`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}`;
-    sshCommandString += ` && rm -rf $OLD_GIT_COMMITS`;
+    sshCommandString += ` && rm -rf $OLD_GIT_COMMIT_HASHES`;
     sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
     sshCommandString += ` && cp .env.example .env`;
 
@@ -56,12 +57,9 @@ try {
     sshCommandString += ` && docker network prune -f`;
     sshCommandString += ` && docker volume prune -f`;
     sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml build --parallel`;
-    // git rev-list HEAD --max-count=1 --skip=1
-    // rm -rf $(git rev-list HEAD --skip=5 | xargs)
-    sshCommandString += ` && [ -d ${BUILD_STORAGE_PATH}/${config.projectName}/live ] && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/live/docker-compose.prod.yml down || echo 0`;
+    sshCommandString += ` && [ -d ${BUILD_STORAGE_PATH}/${config.projectName}/$LAST_GIT_COMMIT_HASH ] && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$LAST_GIT_COMMIT_HASH/docker-compose.prod.yml down || echo 0`;
     sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml up -d`;
-    sshCommandString += ` && ln -sfn ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH ${BUILD_STORAGE_PATH}/${config.projectName}/live`;
-    sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/live`;
+    sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
 
     if (config.hasOwnProperty('commands')) {
         sshCommandString += ` && ${config.commands}`;
