@@ -6,7 +6,6 @@
     },
     "repo": "https://github.com/finer-vision/ci-test",
     "projectName": "ci-test",
-    "releasePath": "/var/www/sites",
     "env": {
         "APP_ENV": {
             "from": "local",

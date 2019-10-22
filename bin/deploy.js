@@ -32,9 +32,10 @@ try {
     sshCommandString += ` && git clone ${config.repo} ${TMP_PATH}`;
     sshCommandString += ` && cd ${TMP_PATH}`;
     sshCommandString += ` && GIT_COMMIT_HASH=$(git rev-parse HEAD)`;
-    sshCommandString += ` && mv ${TMP_PATH} ${BUILD_STORAGE_PATH}/${config.projectName}_$GIT_COMMIT_HASH`;
-    sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}_$GIT_COMMIT_HASH`;
-    sshCommandString += ` && cp -n .env.example .env`;
+    sshCommandString += ` && mkdir -p ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
+    sshCommandString += ` && mv ${TMP_PATH} ${BUILD_STORAGE_PATH}/${config.projectName}`;
+    sshCommandString += ` && cd ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH`;
+    sshCommandString += ` && cp .env.example .env`;
 
     if (config.hasOwnProperty('env')) {
         for (const env in config.env) {
@@ -45,13 +46,13 @@ try {
         }
     }
 
-    sshCommandString += ` && ln -sf ${BUILD_STORAGE_PATH}/${config.projectName}_$GIT_COMMIT_HASH ${config.releasePath}/${config.projectName}`;
-    sshCommandString += ` && cd ${config.releasePath}/${config.projectName}`;
     sshCommandString += ` && docker image prune -f`;
     sshCommandString += ` && docker network prune -f`;
     sshCommandString += ` && docker volume prune -f`;
-    sshCommandString += ` && docker-compose -f docker-compose.prod.yml build --parallel`;
-    sshCommandString += ` && docker-compose -f docker-compose.prod.yml restart`;
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml build --parallel`;
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/live/docker-compose.prod.yml down`;
+    sshCommandString += ` && docker-compose -f ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH/docker-compose.prod.yml up -d`;
+    sshCommandString += ` && ln -sf ${BUILD_STORAGE_PATH}/${config.projectName}/$GIT_COMMIT_HASH ${config.projectName}/live`;
 
     if (config.hasOwnProperty('commands')) {
         sshCommandString += ` && ${config.commands}`;
