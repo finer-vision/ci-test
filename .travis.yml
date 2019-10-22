@@ -4,8 +4,11 @@ jobs:
       php: 7.2
       script:
         - cp .env.example .env
-        - composer ci
+        - composer install
         - php artisan key:generate
+      cache:
+        directories:
+          - "$HOME/.composer/cache"
 
     - stage: node_js
       node_js: 12.13
